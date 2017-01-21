@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 import pandas as pd
 
@@ -7,14 +9,42 @@ class DataSupplier(object):
         self.config = config
         self.alternatives_df = None
 
-    def load_alternatives(self, number=None, columns=None, sample_seed=1):
+    def load_alternatives(self, number=None, columns=None, sample_seed=123):
         alternatives_filename = self.config.get('filenames', 'alternatives')
         self.alternatives_df = pd.read_table(alternatives_filename, header=None)
         if columns:
             self.alternatives_df = pd.DataFrame(self.alternatives_df, columns=columns)
         if number:
-            self.alternatives_df = self.alternatives_df.sample(number, random_state=sample_seed)
+            random.seed(sample_seed)
+            rindex = np.array(random.sample(range(len(self.alternatives_df)), number))
+            self.alternatives_df = self.alternatives_df.ix[rindex]
+            return self.alternatives_df.values, rindex
         return self.alternatives_df.values
 
-    def get_criteria_weights(self):
-        pass
+    def objectify(self, alts):
+        alternatives = []
+        for alt in alts:
+            alternatives.append(Alternative(alt))
+        return self.alternatives_df.values
+
+    def get_alternatives(self, number=None, columns=None, sample_seed=1):
+        alts = self.load_alternatives(number, columns, sample_seed)
+        return self.objectify(alts), alts[1]
+
+
+class Alternative(object):
+    def __init__(self, alt):
+        self.criteria = []
+        self.add_criteria(alt)
+
+    def add_criteria(self, values):
+        for value in values:
+            self.criteria.append(Criterion(value))
+
+    def get_criteria(self):
+        return np.array([criterion.value for criterion in self.criteria])
+
+
+class Criterion(object):
+    def __init__(self, value):
+        self.value = value

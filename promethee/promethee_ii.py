@@ -6,7 +6,7 @@ from promethee.dataSupplier import DataSupplier
 
 
 class PrometheeII(object):
-    def __init__(self, config_filename='default.conf'):
+    def __init__(self, config_filename='default.conf', sample_size=50, seed=123):
         self.config = self.read_config(config_filename)
         self.alternatives = None
         self.alternatives_number = 0
@@ -20,6 +20,9 @@ class PrometheeII(object):
         self.negative_outranking_flow = None
         self.net_flow = None
         self.results = None
+        self.sample_size = sample_size
+        self.seed = seed
+        self.indices = None
 
     def run(self):
         self.load_data()
@@ -29,12 +32,12 @@ class PrometheeII(object):
         self.get_global_preferences()
         self.get_partial_outranking_flows()
         self.get_net_flow()
-        self.obtain_results()
+        return self.obtain_results()
 
     def load_data(self, sample_size=50, use_columns=None):
         use_columns = use_columns or [1, 18, 31, 32, 38, 39, 40, 42, 67]
         ds = DataSupplier(self.config)
-        self.alternatives = ds.load_alternatives(sample_size, use_columns)
+        self.alternatives, self.indices = ds.get_alternatives(self.sample_size, use_columns, self.seed)
         self.alternatives_number, self.criteria_number = self.alternatives.shape
         self.criteria_weights = np.ones(self.criteria_number) / self.criteria_number
 
@@ -69,7 +72,9 @@ class PrometheeII(object):
         self.net_flow = self.positive_outranking_flow - self.negative_outranking_flow
 
     def obtain_results(self):
-        print(self.net_flow)
+        results = list(zip(self.indices, self.net_flow))
+        results = sorted(results, key=lambda result: result[1], reverse=True)
+        return results
 
     def read_config(self, config_filename):
         config = ConfigParser()
