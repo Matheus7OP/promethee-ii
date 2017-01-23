@@ -9,12 +9,15 @@ class DataSupplier(object):
         self.config = config
         self.alternatives_df = None
 
-    def load_alternatives(self, number=None, columns=None, sample_seed=123):
+    def load_alternatives(self, number=None, columns=None, sample_seed=123, rnd=True):
         alternatives_filename = self.config.get('filenames', 'alternatives')
         self.alternatives_df = pd.read_table(alternatives_filename, header=None)
         if columns:
             self.alternatives_df = pd.DataFrame(self.alternatives_df, columns=columns)
-        if number:
+        if rnd and number:
+            self.alternatives_df = self.alternatives_df.head(number)
+            return self.alternatives_df, np.arange(0, number)
+        if not rnd and number:
             random.seed(sample_seed)
             rindex = np.array(random.sample(range(len(self.alternatives_df)), number))
             self.alternatives_df = self.alternatives_df.ix[rindex]
@@ -27,8 +30,8 @@ class DataSupplier(object):
             alternatives.append(Alternative(alt))
         return self.alternatives_df.values
 
-    def get_alternatives(self, number=None, columns=None, sample_seed=1):
-        alts = self.load_alternatives(number, columns, sample_seed)
+    def get_alternatives(self, number=None, columns=None, sample_seed=1, rnd=True):
+        alts = self.load_alternatives(number, columns, sample_seed, rnd)
         return self.objectify(alts), alts[1]
 
 

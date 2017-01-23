@@ -6,7 +6,7 @@ from promethee.dataSupplier import DataSupplier
 
 
 class PrometheeII(object):
-    def __init__(self, config_filename='default.conf', sample_size=50, seed=123, weights=None):
+    def __init__(self, config_filename='default.conf', sample_size=50, seed=123, weights=None, rnd=True):
         self.config = self.read_config(config_filename)
         self.alternatives = None
         self.alternatives_number = 0
@@ -23,6 +23,7 @@ class PrometheeII(object):
         self.sample_size = sample_size
         self.seed = seed
         self.indices = None
+        self.rnd = rnd
 
     def run(self):
         self.load_data()
@@ -37,7 +38,7 @@ class PrometheeII(object):
     def load_data(self, sample_size=50, use_columns=None):
         # use_columns = use_columns or [1, 18, 31, 32, 38, 39, 40, 42, 67]
         ds = DataSupplier(self.config)
-        self.alternatives, self.indices = ds.get_alternatives(self.sample_size, use_columns, self.seed)
+        self.alternatives, self.indices = ds.get_alternatives(self.sample_size, use_columns, self.seed, self.rnd)
         self.alternatives_number, self.criteria_number = self.alternatives.shape
         # self.criteria_weights = np.ones(self.criteria_number) / self.criteria_number
 

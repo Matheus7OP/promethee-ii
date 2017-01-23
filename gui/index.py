@@ -17,7 +17,8 @@ def run():
     alternatives = request.form.get('alternatives', '50')
     seed = request.form.get('seed', '123')
     criteria = [int(value) for key, value in request.form.items() if key.startswith('crit')]
-    solver = PrometheeII(sample_size=int(alternatives), seed=int(seed), weights=criteria)
+    random = True if request.form.get('random') == 'on' else False
+    solver = PrometheeII(sample_size=int(alternatives), seed=int(seed), weights=criteria, rnd=random)
     results = solver.run()
     return render_template('results.html', data=results)
 
