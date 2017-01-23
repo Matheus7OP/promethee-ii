@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <h1>Promethee-II</h1>
-                <div class="col-lg-6 offset-lg-3">
+                <div class="col-lg-8 offset-lg-2">
                     <form method=post action="run">
                         <div class="form-group">
                             <label for="alternatives">Set number of alternatives</label>
@@ -25,6 +25,14 @@
                             <label for="seed">Set seed</label>
                             <input name="seed" type="number" id="seed" value="123"/>
                         </div>
+                        <div class="form-group">
+                            {% for n in range(86) %}
+                                <div style="display: inline-block">
+                                <label for="crit-{{ n }}">Criterium {{ n }} weight</label>
+                                <input name="crit-{{ n }}" type="number" id="crit-{{ n }}" value="0" style="width: 41px;"/>
+                                </div>
+                            {% endfor %}
+                        </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
@@ -33,6 +41,13 @@
         <!-- /.row -->
 
     </div>
+
+ <script>
+     var vals = ["#crit-1", "#crit-18", "#crit-31", "#crit-32", "#crit-38", "#crit-39", "#crit-40", "#crit-42", "#crit-67"];
+     for (i=0; i<vals.length; i++){
+         $(vals[i]).val("1");
+     }
+ </script>
     <!-- /.container -->
 </body>
 </html>

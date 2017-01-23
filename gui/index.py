@@ -16,7 +16,8 @@ def index():
 def run():
     alternatives = request.form.get('alternatives', '50')
     seed = request.form.get('seed', '123')
-    solver = PrometheeII(sample_size=int(alternatives), seed=int(seed))
+    criteria = [int(value) for key, value in request.form.items() if key.startswith('crit')]
+    solver = PrometheeII(sample_size=int(alternatives), seed=int(seed), weights=criteria)
     results = solver.run()
     return render_template('results.html', data=results)
 

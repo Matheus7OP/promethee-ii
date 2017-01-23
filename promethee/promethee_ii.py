@@ -6,11 +6,11 @@ from promethee.dataSupplier import DataSupplier
 
 
 class PrometheeII(object):
-    def __init__(self, config_filename='default.conf', sample_size=50, seed=123):
+    def __init__(self, config_filename='default.conf', sample_size=50, seed=123, weights=None):
         self.config = self.read_config(config_filename)
         self.alternatives = None
         self.alternatives_number = 0
-        self.criteria_weights = None
+        self.criteria_weights = weights
         self.criteria_number = 0
         self.normalized_alternatives = None
         self.pairwise_comparisons = None
@@ -35,11 +35,11 @@ class PrometheeII(object):
         return self.obtain_results()
 
     def load_data(self, sample_size=50, use_columns=None):
-        use_columns = use_columns or [1, 18, 31, 32, 38, 39, 40, 42, 67]
+        # use_columns = use_columns or [1, 18, 31, 32, 38, 39, 40, 42, 67]
         ds = DataSupplier(self.config)
         self.alternatives, self.indices = ds.get_alternatives(self.sample_size, use_columns, self.seed)
         self.alternatives_number, self.criteria_number = self.alternatives.shape
-        self.criteria_weights = np.ones(self.criteria_number) / self.criteria_number
+        # self.criteria_weights = np.ones(self.criteria_number) / self.criteria_number
 
     def normalize_criteria(self):
         self.normalized_alternatives = self.alternatives / self.alternatives.max(axis=0)
@@ -74,6 +74,7 @@ class PrometheeII(object):
     def obtain_results(self):
         results = list(zip(self.indices, self.net_flow))
         results = sorted(results, key=lambda result: result[1], reverse=True)
+        print(results)
         return results
 
     def read_config(self, config_filename):
