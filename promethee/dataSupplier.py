@@ -10,7 +10,7 @@ class DataSupplier(object):
         self.alternatives_df = None
 
     def load_alternatives(self, number=None, columns=None, sample_seed=123, rnd=True):
-        alternatives_filename = self.config.get('filenames', 'alternatives')
+        alternatives_filename = 'insurance_data/ticdata2000.txt'
         self.alternatives_df = pd.read_table(alternatives_filename, header=None)
         if columns:
             self.alternatives_df = pd.DataFrame(self.alternatives_df, columns=columns)

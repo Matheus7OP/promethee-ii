@@ -19,21 +19,7 @@
                     <form method=post action="run">
                         <div class="form-group">
                             <label for="alternatives">Set number of alternatives</label>
-                            <input name="alternatives" type="number" id="alternatives" value="50"/>
-                            <label for="random">Random?</label>
-                            <input name="random" type="checkbox" id="random"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="seed">Set seed</label>
-                            <input name="seed" type="number" id="seed" value="123"/>
-                        </div>
-                        <div class="form-group">
-                            {% for n in range(86) %}
-                                <div style="display: inline-block; font-size: 9px;">
-                                <label for="crit-{{ n }}">Criterium {{ n }} weight</label>
-                                <input name="crit-{{ n }}" type="number" id="crit-{{ n }}" value="0" style="width: 41px"/>
-                                </div>
-                            {% endfor %}
+                            <input name="alternatives" type="number" id="alternatives" value="16"/>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -45,7 +31,8 @@
     </div>
 
  <script>
-     var vals = ["#crit-1", "#crit-18", "#crit-31", "#crit-32", "#crit-38", "#crit-39", "#crit-40", "#crit-42", "#crit-67"];
+     var vals = ["#crit-0", "#crit-1", "#crit-2", "#crit-3", "#crit-4", "#crit-5", "#crit-6", "#crit-7", "#crit-8", "#crit-9", "#crit-10", "#crit-11", "#crit-12", "#crit-13", "#crit-14", 
+     "#crit-15", "#crit-16", "#crit-17", "#crit-18", "#crit-19", "#crit-20", "#crit-21", "#crit-22", "#crit-23", "#crit-24", "#crit-25", "#crit-26"];
      for (i=0; i<vals.length; i++){
          $(vals[i]).val("1");
      }
